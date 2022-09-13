@@ -6,18 +6,21 @@ if ($xmldata){
     $xmldata -match 'https://downloads.nordlayer.com/win/releases/NordLayerSetup_.+\.msi' | Out-Null
     $matches[0]
 }
- $uri = $matches[0]
 
- # This creates the destination folder for the file if it doesn't exist
- if ((test-path c:\temp\nord) -eq $false){
+$uri = $matches[0]
+
+if ($uri) {
+  # This creates the destination folder for the file if it doesn't exist
+  if ((test-path c:\temp\nord) -eq $false){
     new-item -type directory C:\temp\nord
   }
 
-# Get file name from split URL
-$filename = $uri.split('/')[-1]
+  # Get file name from split URL
+  $filename = $uri.split('/')[-1]
 
-# Download the lastest version to destination folder
-Invoke-WebRequest -Uri $($uri) -UseBasicParsing -OutFile "C:\Temp\nord\$($filename)"
+  # Download the lastest version to destination folder
+  Invoke-WebRequest -Uri $($uri) -UseBasicParsing -OutFile "C:\Temp\nord\$($filename)"
 
-# Execut install quietly
-msiexec /i "C:\Temp\nord\$($filename)" /q /norestart
+  # Execut install quietly
+  msiexec /i "C:\Temp\nord\$($filename)" /q /norestart
+}
